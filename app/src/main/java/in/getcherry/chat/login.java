@@ -1,8 +1,10 @@
 package in.getcherry.chat;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class login extends AppCompatActivity {
@@ -18,6 +20,15 @@ public class login extends AppCompatActivity {
 
             public void onClick(View v) {
 
+            }
+        });
+
+        Button btn = (Button)findViewById(R.id.signup);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(login.this, signup.class));
             }
         });
     }
