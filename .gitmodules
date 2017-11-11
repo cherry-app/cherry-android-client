@@ -1,0 +1,6 @@
+[submodule "cherry-core"]
+	path = cherry-core
+	url = git@github.com:cherry-app/cherry-core.git
+[submodule "cherry-priority-sdk"]
+	path = cherry-priority-sdk
+	url = git@github.com:cherry-app/cherry-priority-sdk.git
