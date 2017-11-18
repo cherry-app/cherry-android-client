@@ -5,10 +5,13 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/cherry-android-client'
     }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
-        applicationId "in.getcherry.chat"
+        applicationId "com.cherry.chat"
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
@@ -31,11 +34,9 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support:design:26.1.0'
     testCompile 'junit:junit:4.12'
-    compile 'com.google.firebase:firebase-auth:11.6.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
-apply plugin: 'com.google.gms.google-services'
 repositories {
     mavenCentral()
 }
