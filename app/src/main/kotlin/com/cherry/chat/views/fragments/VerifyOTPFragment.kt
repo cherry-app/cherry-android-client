@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.cherry.chat.R
+import com.cherry.chat.managers.SharedPreferenceManager
 import com.cherry.chat.viewmodels.SignUpViewModel
 import com.cherry.core.Cherry
 import kotlinx.android.synthetic.main.signup_part_2.*
@@ -28,6 +29,9 @@ class VerifyOTPFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         btnFinish.setOnClickListener {
             verifyOtp()
+        }
+        tvResend.setOnClickListener {
+            resendOtp()
         }
     }
 
@@ -58,4 +62,25 @@ class VerifyOTPFragment: Fragment() {
         })
     }
 
+    private fun resendOtp() {
+        tvResend.isEnabled = false;
+        resendOtpProgressBar.visibility = View.VISIBLE;
+        Cherry.Session.resendOtp(SharedPreferenceManager.getPhoneNumber().toString(), { attemptsLeft, exception ->
+            resendOtpProgressBar.visibility = View.GONE;
+            var message = "OTP successfully resent."
+            if (attemptsLeft >= 0) {
+                tvResend.isEnabled = attemptsLeft > 0;
+            } else {
+                message = if (exception == null) {
+                    "You have exceeded your OTP resend limit for time being. Please try after sometime."
+                } else {
+                    "There was some problem while resending the OTP. Please check your internet connection."
+                }
+            }
+            val fragmentView = view
+            if (fragmentView != null) {
+                Snackbar.make(fragmentView, message, Snackbar.LENGTH_LONG).show()
+            }
+        })
+    }
 }

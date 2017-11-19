@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.cherry.chat.R
+import com.cherry.chat.managers.SharedPreferenceManager
 import com.cherry.chat.viewmodels.SignUpViewModel
 import com.cherry.core.Cherry
 import kotlinx.android.synthetic.main.signup_part_1.*
@@ -26,11 +27,26 @@ class RequestOTPFragment: Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        loadDefaults()
+
         btnSignUp.setOnClickListener {
             requestOtp()
         }
         tvHaveOTP.setOnClickListener {
             alreadyHaveOtp()
+        }
+    }
+
+    private fun loadDefaults() {
+        val phoneNumber = SharedPreferenceManager.getPhoneNumber()
+        val userName = SharedPreferenceManager.getUserName()
+
+        if(phoneNumber != null) {
+            etPhone.setText(phoneNumber);
+        }
+        if(userName!= null) {
+            etName.setText(userName);
         }
     }
 
@@ -52,6 +68,9 @@ class RequestOTPFragment: Fragment() {
         progressBar.visibility = View.VISIBLE
         Cherry.Session.requestOtp(phoneNumber, name, { result, exception ->
             if (result) {
+                SharedPreferenceManager.setPhoneNumber(phoneNumber);
+                SharedPreferenceManager.setUserName(name);
+
                 val signUpViewModel = ViewModelProviders.of(activity).get(SignUpViewModel::class.java)
                 signUpViewModel.getLoginStateLiveData().value = SignUpViewModel.LOGIN_STATE_OTP_REQUESTED
             } else {

@@ -1,6 +1,7 @@
 package com.cherry.chat
 
 import android.app.Application
+import com.cherry.chat.managers.SharedPreferenceManager
 import com.cherry.core.Cherry
 
 /**
@@ -16,6 +17,7 @@ class CherryChatApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         Cherry.init(this, PARTNER_ID)
+        SharedPreferenceManager.initPreference(this);
     }
 
 }
