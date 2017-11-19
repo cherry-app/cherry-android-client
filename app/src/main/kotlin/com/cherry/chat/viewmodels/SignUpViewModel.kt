@@ -11,9 +11,7 @@ class SignUpViewModel: ViewModel() {
 
     companion object {
         const val LOGIN_STATE_STARTING = 0
-        const val LOGIN_STATE_REQUESTING_OTP = 1
         const val LOGIN_STATE_OTP_REQUESTED = 2
-        const val LOGIN_STATE_VERIFYING = 3
         const val LOGIN_STATE_VERIFIED = 5
         const val LOGIN_STATE_UNKNOWN = -1
 

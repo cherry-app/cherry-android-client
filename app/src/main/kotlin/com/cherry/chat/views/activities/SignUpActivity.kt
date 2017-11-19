@@ -41,9 +41,7 @@ class SignUpActivity: AppCompatActivity() {
     private fun handleState(state: Int) {
         when(state) {
             SignUpViewModel.LOGIN_STATE_STARTING -> showFirstFragment()
-            SignUpViewModel.LOGIN_STATE_REQUESTING_OTP -> {  }
             SignUpViewModel.LOGIN_STATE_OTP_REQUESTED -> showSecondFragment()
-            SignUpViewModel.LOGIN_STATE_VERIFYING -> { }
             SignUpViewModel.LOGIN_STATE_VERIFIED -> endSignUpFlow()
             else -> reset()
         }
