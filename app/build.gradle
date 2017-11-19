@@ -13,6 +13,10 @@ android {
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.cherry.chat"
+        def propsFile = rootProject.file('secret.properties')
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        buildConfigField "String", "CHERRY_CHAT_PARTNER_ID", props['CHERRY_CHAT_PARTNER_ID']
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1

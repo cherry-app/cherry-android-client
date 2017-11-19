@@ -10,14 +10,10 @@ import com.cherry.core.Cherry
 
 class CherryChatApplication: Application() {
 
-    companion object {
-        const val PARTNER_ID = ""
-    }
-
     override fun onCreate() {
         super.onCreate()
-        Cherry.init(this, PARTNER_ID)
-        SharedPreferenceManager.initPreference(this);
+        Cherry.init(this, BuildConfig.CHERRY_CHAT_PARTNER_ID)
+        SharedPreferenceManager.initPreference(this)
     }
 
 }

@@ -63,13 +63,13 @@ class VerifyOTPFragment: Fragment() {
     }
 
     private fun resendOtp() {
-        tvResend.isEnabled = false;
-        resendOtpProgressBar.visibility = View.VISIBLE;
+        tvResend.isEnabled = false
+        resendOtpProgressBar.visibility = View.VISIBLE
         Cherry.Session.resendOtp(SharedPreferenceManager.getPhoneNumber().toString(), { attemptsLeft, exception ->
-            resendOtpProgressBar.visibility = View.GONE;
+            resendOtpProgressBar.visibility = View.GONE
             var message = "OTP successfully resent."
             if (attemptsLeft >= 0) {
-                tvResend.isEnabled = attemptsLeft > 0;
+                tvResend.isEnabled = attemptsLeft > 0
             } else {
                 message = if (exception == null) {
                     "You have exceeded your OTP resend limit for time being. Please try after sometime."

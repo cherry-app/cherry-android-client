@@ -17,7 +17,7 @@ import com.cherry.chat.views.fragments.VerifyOTPFragment
 
 class SignUpActivity: AppCompatActivity() {
 
-    lateinit var signUpViewModel: SignUpViewModel
+    private lateinit var signUpViewModel: SignUpViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
