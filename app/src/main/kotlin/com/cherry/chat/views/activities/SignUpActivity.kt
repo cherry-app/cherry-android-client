@@ -2,8 +2,10 @@ package com.cherry.chat.views.activities
 
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.cherry.chat.R
 import com.cherry.chat.viewmodels.SignUpViewModel
 import com.cherry.chat.views.fragments.RequestOTPFragment
@@ -19,40 +21,43 @@ class SignUpActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
         setContentView(R.layout.activity_signup)
         signUpViewModel = ViewModelProviders.of(this).get(SignUpViewModel::class.java)
-        showFirstFragment()
-        val firstStageComplete = signUpViewModel.getOtpRequestedLiveData().value ?: false
-        if (firstStageComplete) {
-            showSecondFragment()
-        } else {
-            signUpViewModel.getOtpRequestedLiveData().observe({ lifecycle }, { r1 ->
-                val result1 = r1 ?: false
-                if (result1) {
-                    signUpViewModel.getOtpRequestedLiveData().removeObservers({ lifecycle })
-                    showSecondFragment()
-                    val secondStageComplete = signUpViewModel.getLoginSuccessfulLiveData().value ?: false
-                    if (secondStageComplete) {
-                        endSignUpFlow()
-                    } else {
-                        signUpViewModel.getLoginSuccessfulLiveData().observe({ lifecycle }, { r2 ->
-                            val result2 = r2 ?: false
-                            if (result2) {
-                                endSignUpFlow()
-                            }
+        val currentState = signUpViewModel.getLoginStateLiveData().value ?: SignUpViewModel.LOGIN_STATE_UNKNOWN
+        handleState(currentState)
+        observe()
+    }
 
-                        })
-                    }
-                }
-            })
+    private fun observe() {
+        signUpViewModel.getLoginStateLiveData().observeForever { newState ->
+            val state = newState ?: SignUpViewModel.LOGIN_STATE_UNKNOWN
+            handleState(state)
         }
+    }
+
+    private fun handleState(state: Int) {
+        when(state) {
+            SignUpViewModel.LOGIN_STATE_STARTING -> showFirstFragment()
+            SignUpViewModel.LOGIN_STATE_REQUESTING_OTP -> {  }
+            SignUpViewModel.LOGIN_STATE_OTP_REQUESTED -> showSecondFragment()
+            SignUpViewModel.LOGIN_STATE_VERIFYING -> { }
+            SignUpViewModel.LOGIN_STATE_VERIFIED -> endSignUpFlow()
+            else -> reset()
+        }
+    }
+
+    private fun reset() {
+        signUpViewModel.getLoginStateLiveData().value = SignUpViewModel.LOGIN_STATE_STARTING
     }
 
     private fun showFirstFragment() {
         val fragment = RequestOTPFragment()
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setCustomAnimations(0, R.anim.slide_out_left, 0, R.anim.slide_out_left)
-        transaction.add(R.id.fragment_container, fragment, "page1")
+        transaction.replace(R.id.fragment_container, fragment, "page1")
         transaction.commit()
     }
 
@@ -65,8 +70,8 @@ class SignUpActivity: AppCompatActivity() {
     }
 
     private fun endSignUpFlow() {
+        signUpViewModel.getLoginStateLiveData().removeObservers({ lifecycle })
         val conversationLaunchIntent = Intent(this, ConversationListActivity::class.java)
-        signUpViewModel.getLoginSuccessfulLiveData().removeObservers({ lifecycle })
         startActivity(conversationLaunchIntent)
         finish()
     }

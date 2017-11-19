@@ -9,12 +9,21 @@ import android.arch.lifecycle.ViewModel
 
 class SignUpViewModel: ViewModel() {
 
-    private var otpRequestedLiveData: MutableLiveData<Boolean>? = null
-    private var loginSuccessful: MutableLiveData<Boolean>? = null
+    companion object {
+        const val LOGIN_STATE_STARTING = 0
+        const val LOGIN_STATE_REQUESTING_OTP = 1
+        const val LOGIN_STATE_OTP_REQUESTED = 2
+        const val LOGIN_STATE_VERIFYING = 3
+        const val LOGIN_STATE_VERIFIED = 5
+        const val LOGIN_STATE_UNKNOWN = -1
 
-    fun getOtpRequestedLiveData(): MutableLiveData<Boolean> = otpRequestedLiveData ?: MutableLiveData<Boolean>().also { otpRequestedLiveData = it }
+    }
 
-    fun getLoginSuccessfulLiveData(): MutableLiveData<Boolean> = loginSuccessful ?: MutableLiveData<Boolean>().also { loginSuccessful = it }
+    private var loginStateLiveData: MutableLiveData<Int>? = null
 
+    fun getLoginStateLiveData(): MutableLiveData<Int>
+            = loginStateLiveData ?: MutableLiveData<Int>().apply {
+        value = LOGIN_STATE_STARTING
+    }.also { loginStateLiveData = it }
 
 }
