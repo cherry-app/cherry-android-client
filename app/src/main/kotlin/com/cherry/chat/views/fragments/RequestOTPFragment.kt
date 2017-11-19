@@ -27,9 +27,7 @@ class RequestOTPFragment: Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnSignUp.setOnClickListener {
-//            requestOtp()
-            val signUpViewModel = ViewModelProviders.of(activity).get(SignUpViewModel::class.java)
-            signUpViewModel.getOtpRequestedLiveData().value = true
+            requestOtp()
         }
     }
 
