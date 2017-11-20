@@ -1,7 +1,6 @@
 package com.cherry.chat.managers
 
 import android.content.Context
-import android.content.SharedPreferences
 
 /**
  * Created by kavins on 11/19/17.
@@ -13,26 +12,26 @@ object SharedPreferenceManager {
 
     private const val KEY_PHONE_NUMBER = "phoneNumber"
     private const val KEY_USER_NAME = "userName"
+    private const val KEY_HAS_ASKED_CONTACTS_PERMISSION = "hasAskedContactsPermission"
 
-    @Volatile private var SHARED_PREFERENCE_INSTANCE: SharedPreferences? = null
-
-    fun initPreference(context: Context) {
-        SHARED_PREFERENCE_INSTANCE = context.getSharedPreferences(CHERRY_CHAT_PREFS, Context.MODE_PRIVATE)
+    fun setPhoneNumber(context: Context, phoneNumber: String) {
+        context.getSharedPreferences(CHERRY_CHAT_PREFS, Context.MODE_PRIVATE).edit().putString(KEY_PHONE_NUMBER, phoneNumber).apply()
     }
 
-    fun setPhoneNumber(phoneNumber: String) {
-        SHARED_PREFERENCE_INSTANCE?.edit()?.putString(KEY_PHONE_NUMBER, phoneNumber)?.apply()
+    fun getPhoneNumber(context: Context): String? =
+            context.getSharedPreferences(CHERRY_CHAT_PREFS, Context.MODE_PRIVATE).getString(KEY_PHONE_NUMBER, null)
+
+    fun setUserName(context: Context, userName: String) {
+        context.getSharedPreferences(CHERRY_CHAT_PREFS, Context.MODE_PRIVATE).edit().putString(KEY_USER_NAME, userName).apply()
     }
 
-    fun getPhoneNumber(): String? {
-        return SHARED_PREFERENCE_INSTANCE?.getString(KEY_PHONE_NUMBER, null)
+    fun getUserName(context: Context): String? =
+            context.getSharedPreferences(CHERRY_CHAT_PREFS, Context.MODE_PRIVATE).getString(KEY_USER_NAME, null)
+
+    fun setHasAskedContactsPermission(context: Context, hasAsked: Boolean) {
+        context.getSharedPreferences(CHERRY_CHAT_PREFS, Context.MODE_PRIVATE).edit().putBoolean(KEY_HAS_ASKED_CONTACTS_PERMISSION, hasAsked).apply()
     }
 
-    fun setUserName(userName: String) {
-        SHARED_PREFERENCE_INSTANCE?.edit()?.putString(KEY_USER_NAME, userName)?.apply()
-    }
-
-    fun getUserName(): String? {
-        return SHARED_PREFERENCE_INSTANCE?.getString(KEY_USER_NAME, null)
-    }
+    fun getHasAskedContactsPermission(context: Context): Boolean =
+            context.getSharedPreferences(CHERRY_CHAT_PREFS, Context.MODE_PRIVATE).getBoolean(KEY_HAS_ASKED_CONTACTS_PERMISSION, false)
 }
