@@ -39,14 +39,14 @@ class RequestOTPFragment: Fragment() {
     }
 
     private fun loadDefaults() {
-        val phoneNumber = SharedPreferenceManager.getPhoneNumber()
-        val userName = SharedPreferenceManager.getUserName()
+        val phoneNumber = SharedPreferenceManager.getPhoneNumber(context)
+        val userName = SharedPreferenceManager.getUserName(context)
 
         if(phoneNumber != null) {
-            etPhone.setText(phoneNumber);
+            etPhone.setText(phoneNumber)
         }
         if(userName!= null) {
-            etName.setText(userName);
+            etName.setText(userName)
         }
     }
 
@@ -66,10 +66,11 @@ class RequestOTPFragment: Fragment() {
         }
         btnSignUp.visibility = View.INVISIBLE
         progressBar.visibility = View.VISIBLE
-        Cherry.Session.requestOtp(phoneNumber, name, { result, exception ->
+        val phoneNumberWithCode = "+91" + phoneNumber
+        Cherry.Session.requestOtp(phoneNumberWithCode, name, { result, exception ->
             if (result) {
-                SharedPreferenceManager.setPhoneNumber(phoneNumber);
-                SharedPreferenceManager.setUserName(name);
+                SharedPreferenceManager.setPhoneNumber(context, phoneNumberWithCode)
+                SharedPreferenceManager.setUserName(context, name)
 
                 val signUpViewModel = ViewModelProviders.of(activity).get(SignUpViewModel::class.java)
                 signUpViewModel.getLoginStateLiveData().value = SignUpViewModel.LOGIN_STATE_OTP_REQUESTED

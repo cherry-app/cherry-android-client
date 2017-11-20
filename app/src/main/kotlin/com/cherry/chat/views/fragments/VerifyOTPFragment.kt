@@ -65,7 +65,7 @@ class VerifyOTPFragment: Fragment() {
     private fun resendOtp() {
         tvResend.isEnabled = false
         resendOtpProgressBar.visibility = View.VISIBLE
-        Cherry.Session.resendOtp(SharedPreferenceManager.getPhoneNumber().toString(), { attemptsLeft, exception ->
+        Cherry.Session.resendOtp(SharedPreferenceManager.getPhoneNumber(context).toString(), { attemptsLeft, exception ->
             resendOtpProgressBar.visibility = View.GONE
             var message = "OTP successfully resent."
             if (attemptsLeft >= 0) {

@@ -47,9 +47,8 @@ class ConversationListActivity: AppCompatActivity() {
                     }
                 }
             } else {
-
+                showContactsPicker()
             }
-            //Cherry.Messaging.postTextMessage("Hello", "1", {})
         }
     }
 
@@ -77,6 +76,8 @@ class ConversationListActivity: AppCompatActivity() {
         when(requestCode) {
             REQUEST_CODE_CONTACTS_PERMISSION -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    showContactsPicker()
+                } else {
                     Snackbar.make(listConversations, "Contacts permission was denied. Cannot compose a message.", Snackbar.LENGTH_LONG).show()
                 }
             }
