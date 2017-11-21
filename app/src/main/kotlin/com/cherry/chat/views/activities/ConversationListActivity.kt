@@ -1,7 +1,9 @@
 package com.cherry.chat.views.activities
 
 import android.Manifest
+import android.app.Activity
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -14,6 +16,7 @@ import com.cherry.chat.R
 import com.cherry.chat.managers.SharedPreferenceManager
 import com.cherry.chat.viewmodels.ConversationViewModel
 import com.cherry.core.Cherry
+import com.cherry.core.models.Participant
 import kotlinx.android.synthetic.main.activity_conversation_list.*
 
 /**
@@ -24,9 +27,10 @@ class ConversationListActivity: AppCompatActivity() {
 
     companion object {
         const val REQUEST_CODE_CONTACTS_PERMISSION = 701
+        const val REQUEST_CODE_PARTICIPANT_PICKER = 101
     }
 
-    lateinit var conversationViewModel: ConversationViewModel
+    private lateinit var conversationViewModel: ConversationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,8 +88,27 @@ class ConversationListActivity: AppCompatActivity() {
         }
     }
 
-    private fun showContactsPicker() {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_CODE_PARTICIPANT_PICKER -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val participant = data?.getSerializableExtra(RecipientPickerActivity.KEY_PARTICIPANT) as? Participant
+                    participant ?: return
+                    showConversationFor(participant)
+                } else {
 
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun showConversationFor(participant: Participant) {
+        startActivity(Intent(this, ConversationActivity::class.java).apply { putExtra(ConversationActivity.KEY_PARTICIPANT, participant) })
+    }
+
+    private fun showContactsPicker() {
+        startActivityForResult(Intent(this, RecipientPickerActivity::class.java), REQUEST_CODE_PARTICIPANT_PICKER)
     }
 
     private fun showPermissionRationale() {
