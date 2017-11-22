@@ -12,6 +12,8 @@ import com.cherry.core.models.ConversationWithParticipant
 
 class ConversationViewModel: ViewModel() {
 
+    private var conversationLiveData: LiveData<List<ConversationWithParticipant>>? = null
+
     fun getConversationLiveData(context: Context): LiveData<List<ConversationWithParticipant>> =
-            Cherry.Messaging.getConversationLiveData(context)
+            conversationLiveData ?: Cherry.Messaging.getConversationLiveData(context).also { conversationLiveData = it }
 }

@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.View
 import com.cherry.chat.R
 import com.cherry.chat.managers.SharedPreferenceManager
@@ -33,13 +34,13 @@ class ConversationListActivity: AppCompatActivity() {
         const val REQUEST_CODE_PARTICIPANT_PICKER = 101
     }
 
-    private lateinit var conversationViewModel: ConversationViewModel
+    var conversationViewModel: ConversationViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversation_list)
-        syncIfPossible()
         conversationViewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
+        syncIfPossible()
         listConversations.layoutManager = LinearLayoutManager(this)
         listConversations.adapter = ConversationListAdapter().apply { onConversationSelected = { conversation, participant -> this@ConversationListActivity.onConversationSelected(conversation, participant) } }
         observeConversations()
@@ -75,9 +76,12 @@ class ConversationListActivity: AppCompatActivity() {
     }
 
     private fun observeConversations() {
-        (listConversations.adapter as ConversationListAdapter).setList(conversationViewModel.getConversationLiveData(this).value)
-        conversationViewModel.getConversationLiveData(this).observeForever { list ->
-            (listConversations.adapter as ConversationListAdapter).setList(list)
+        val liveData = conversationViewModel?.getConversationLiveData(this)
+        liveData ?: return
+        (listConversations.adapter as ConversationListAdapter).setList(liveData.value)
+        liveData.observeForever { list ->
+            Log.d("CherryObserver", "Found change")
+            (listConversations.adapter as ConversationListAdapter).updateList(list)
             if (list != null && list.isNotEmpty()) {
                 emptyView.visibility = View.GONE
             } else {
@@ -88,7 +92,8 @@ class ConversationListActivity: AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        conversationViewModel.getConversationLiveData(this).removeObservers(this)
+        val liveData = Cherry.Messaging.getConversationLiveData(this)
+        liveData.removeObservers(this)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

@@ -72,7 +72,7 @@ class ConversationListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     class DiffUtilCalculator(private val oldConversations: List<ConversationWithParticipant>, private val newConversations: List<ConversationWithParticipant>): DiffUtil.Callback() {
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                oldConversations[oldItemPosition].conversation?.id == newConversations[newItemPosition].conversation?.id
+                oldConversations[oldItemPosition].conversation?.snippet == newConversations[newItemPosition].conversation?.snippet
 
         override fun getOldListSize(): Int = oldConversations.size
 

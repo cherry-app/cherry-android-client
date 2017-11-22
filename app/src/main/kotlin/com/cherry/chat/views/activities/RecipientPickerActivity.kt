@@ -28,6 +28,10 @@ class RecipientPickerActivity : AppCompatActivity() {
         Cherry.Contacts.sync(this)
         listParticipants.layoutManager = LinearLayoutManager(this)
         listParticipants.adapter = ParticipantListAdapter().apply { onParticipantSelected = { participant ->  onParticipantSelected(participant)} }
+    }
+
+    override fun onResume() {
+        super.onResume()
         observeParticipants()
     }
 
@@ -47,10 +51,10 @@ class RecipientPickerActivity : AppCompatActivity() {
         val liveData = Cherry.Contacts.getParticipantsLiveData(this)
         (listParticipants.adapter as ParticipantListAdapter).setList(liveData.value)
         listParticipants.adapter.notifyDataSetChanged()
-        liveData.observeForever { participants ->
-            participants ?: return@observeForever
+        liveData.observe( { lifecycle}, { participants ->
+            participants ?: return@observe
             (listParticipants.adapter as ParticipantListAdapter).updateList(participants)
-        }
+        })
     }
 
 }

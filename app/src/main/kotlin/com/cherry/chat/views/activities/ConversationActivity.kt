@@ -20,6 +20,8 @@ class ConversationActivity : AppCompatActivity() {
         const val KEY_PARTICIPANT = "participant"
     }
 
+
+
     private var mParticipant: Participant? = null
     private var mParticipantId: String? = null
 
@@ -35,6 +37,10 @@ class ConversationActivity : AppCompatActivity() {
         fabSend.setOnClickListener {
             sendMessage()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
         observeMessages()
     }
 
@@ -42,9 +48,10 @@ class ConversationActivity : AppCompatActivity() {
         val participantId = mParticipantId ?: return
         val liveData = Cherry.Messaging.getMessageLiveDataForConversation(this, participantId).create(0, 30)
         (listMessages.adapter as PagedMessageListAdapter).setList(liveData.value)
-        liveData.observeForever { pagedList ->
+        liveData.observe({lifecycle}, { pagedList ->
             (listMessages.adapter as PagedMessageListAdapter).setList(pagedList)
-        }
+            listMessages.smoothScrollToPosition(0)
+        })
     }
 
     private fun sendMessage() {
