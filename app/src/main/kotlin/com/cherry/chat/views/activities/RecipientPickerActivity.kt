@@ -38,6 +38,11 @@ class RecipientPickerActivity : AppCompatActivity() {
         finish()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Cherry.Contacts.getParticipantsLiveData(this).removeObservers(this)
+    }
+
     private fun observeParticipants() {
         val liveData = Cherry.Contacts.getParticipantsLiveData(this)
         (listParticipants.adapter as ParticipantListAdapter).setList(liveData.value)

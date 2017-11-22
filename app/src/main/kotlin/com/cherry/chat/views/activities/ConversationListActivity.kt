@@ -11,11 +11,14 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
+import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import com.cherry.chat.R
 import com.cherry.chat.managers.SharedPreferenceManager
 import com.cherry.chat.viewmodels.ConversationViewModel
+import com.cherry.chat.views.adapters.ConversationListAdapter
 import com.cherry.core.Cherry
+import com.cherry.core.models.Conversation
 import com.cherry.core.models.Participant
 import kotlinx.android.synthetic.main.activity_conversation_list.*
 
@@ -37,6 +40,8 @@ class ConversationListActivity: AppCompatActivity() {
         setContentView(R.layout.activity_conversation_list)
         syncIfPossible()
         conversationViewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
+        listConversations.layoutManager = LinearLayoutManager(this)
+        listConversations.adapter = ConversationListAdapter().apply { onConversationSelected = { conversation, participant -> this@ConversationListActivity.onConversationSelected(conversation, participant) } }
         observeConversations()
         fabNewMessage.setOnClickListener {
             val permissionStatus = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
@@ -65,9 +70,19 @@ class ConversationListActivity: AppCompatActivity() {
         }
     }
 
+    private fun onConversationSelected(conversation: Conversation, participant: Participant?) {
+        showConversationFor(conversation.participantId, participant)
+    }
+
     private fun observeConversations() {
+        (listConversations.adapter as ConversationListAdapter).setList(conversationViewModel.getConversationLiveData(this).value)
         conversationViewModel.getConversationLiveData(this).observeForever { list ->
-            Log.d("CherryChat", "Conversation changed")
+            (listConversations.adapter as ConversationListAdapter).setList(list)
+            if (list != null && list.isNotEmpty()) {
+                emptyView.visibility = View.GONE
+            } else {
+                emptyView.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -94,7 +109,7 @@ class ConversationListActivity: AppCompatActivity() {
                 if (resultCode == Activity.RESULT_OK) {
                     val participant = data?.getSerializableExtra(RecipientPickerActivity.KEY_PARTICIPANT) as? Participant
                     participant ?: return
-                    showConversationFor(participant)
+                    showConversationFor(participant.id, participant)
                 } else {
 
                 }
@@ -103,8 +118,11 @@ class ConversationListActivity: AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun showConversationFor(participant: Participant) {
-        startActivity(Intent(this, ConversationActivity::class.java).apply { putExtra(ConversationActivity.KEY_PARTICIPANT, participant) })
+    private fun showConversationFor(participantId: String, participant: Participant?) {
+        startActivity(Intent(this, ConversationActivity::class.java).apply {
+            putExtra(ConversationActivity.KEY_PARTICIPANT_ID, participantId)
+            putExtra(ConversationActivity.KEY_PARTICIPANT, participant)
+        })
     }
 
     private fun showContactsPicker() {

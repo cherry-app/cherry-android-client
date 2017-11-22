@@ -39,6 +39,7 @@ class ParticipantListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     private fun getTypeLabel(type: RecipientType): String = when(type) {
+        RecipientType.SELF -> "YOU"
         RecipientType.INDIVIDUAL -> "Your contact"
         RecipientType.GROUP -> "A group you're in"
         RecipientType.UNKNOWN -> "A wild Pokemon has appeared!"
