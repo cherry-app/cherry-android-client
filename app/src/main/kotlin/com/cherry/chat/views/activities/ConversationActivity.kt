@@ -30,10 +30,16 @@ class ConversationActivity : AppCompatActivity() {
         setContentView(R.layout.activity_conversation)
         mParticipantId = intent.getStringExtra(KEY_PARTICIPANT_ID)
         mParticipant = intent.getSerializableExtra(KEY_PARTICIPANT) as? Participant
-        mParticipantId ?: finish().also { return@onCreate }
+        val participantId: String? = mParticipantId
+        if (participantId == null) {
+            finish()
+            return
+        }
+        Cherry.Messaging.markAsRead(participantId)
         supportActionBar?.title = mParticipant?.displayName ?: mParticipantId
         listMessages.layoutManager = LinearLayoutManager(this).apply { reverseLayout = true }
         listMessages.adapter = PagedMessageListAdapter()
+        Cherry.Messaging.tryPublishingMessages(this)
         fabSend.setOnClickListener {
             sendMessage()
         }
@@ -58,7 +64,9 @@ class ConversationActivity : AppCompatActivity() {
         val text = etComposeView.text.toString()
         val recipientId = mParticipantId ?: return
         if (text.isNotBlank()) {
-            Cherry.Messaging.queueTextMessage(this, text, recipientId, {})
+            Cherry.Messaging.queueTextMessage(this, text, recipientId, {
+                Cherry.Messaging.tryPublishingMessages(this)
+            })
             etComposeView.setText("")
         }
     }

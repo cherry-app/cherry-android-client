@@ -39,6 +39,7 @@ class ConversationListActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversation_list)
+        Cherry.Messaging.tryPublishingMessages(this)
         conversationViewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
         syncIfPossible()
         listConversations.layoutManager = LinearLayoutManager(this)
