@@ -21,6 +21,7 @@ import com.cherry.chat.views.adapters.ConversationListAdapter
 import com.cherry.core.Cherry
 import com.cherry.core.models.Conversation
 import com.cherry.core.models.Participant
+import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_conversation_list.*
 
 /**
@@ -61,6 +62,13 @@ class ConversationListActivity: AppCompatActivity() {
                 showContactsPicker()
             }
         }
+
+        val firebaseToken = FirebaseInstanceId.getInstance().token ?: return
+        Log.d("CherryFCM", "Found existing token: $firebaseToken")
+        Cherry.Session.updateFirebaseToken(firebaseToken, { success ->
+            // TODO If not successful, need to handle retry logic
+            Log.d("CherryFCM", "Token sync: $success")
+        })
     }
 
     private fun syncIfPossible() {
