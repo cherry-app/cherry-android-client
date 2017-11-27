@@ -9,6 +9,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.support.v4.app.NotificationCompat
+import com.cherry.chat.CherryChatApplication
 import com.cherry.chat.R
 import com.cherry.chat.views.activities.ConversationActivity
 import com.cherry.core.Cherry
@@ -63,12 +64,12 @@ class IncomingMessageReceiver: BroadcastReceiver() {
                 style.addMessage(message.content, message.receivedTime, participant.displayName)
             }
 
-            val id = participant.contactId.toInt()
+            val id = CherryChatApplication.idFor(participant.id)
             val intent = Intent(context, ConversationActivity::class.java)
             intent.putExtra(ConversationActivity.KEY_PARTICIPANT_ID, participant.id)
             intent.putExtra(ConversationActivity.KEY_PARTICIPANT, participant)
-
-            val pendingIntent = PendingIntent.getActivity(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            intent.action = "" + System.currentTimeMillis()
+            val pendingIntent = PendingIntent.getActivity(context, id, intent, PendingIntent.FLAG_ONE_SHOT)
 
             val notification = NotificationCompat.Builder(context, incomingMessageNotificationId)
                     .setContentTitle("Cherry")
@@ -82,7 +83,7 @@ class IncomingMessageReceiver: BroadcastReceiver() {
                     .setStyle(style)
                     .build()
 
-            notificationManager.notify(participant.contactId.toInt(), notification)
+            notificationManager.notify(id, notification)
         }
     }
 }

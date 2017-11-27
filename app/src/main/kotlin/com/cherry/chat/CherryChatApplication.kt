@@ -14,4 +14,17 @@ class CherryChatApplication: Application() {
         Cherry.init(this, BuildConfig.CHERRY_CHAT_PARTNER_ID)
     }
 
+    companion object {
+
+        private val participantIdList: ArrayList<String> = ArrayList()
+
+        fun idFor(participantId: String): Int {
+            return if (participantIdList.contains(participantId)) {
+                participantIdList.indexOf(participantId)
+            } else {
+                participantIdList.add(participantId)
+                participantId.length - 1
+            }
+        }
+    }
 }
