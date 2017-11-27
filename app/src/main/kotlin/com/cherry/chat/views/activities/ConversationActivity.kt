@@ -36,7 +36,7 @@ class ConversationActivity : SessionActivity() {
             finish()
             return
         }
-        Cherry.Messaging.markAsRead(participantId)
+        Cherry.Messaging.markAsRead(this, participantId)
         supportActionBar?.title = mParticipant?.displayName ?: mParticipantId
         listMessages.layoutManager = LinearLayoutManager(this).apply { reverseLayout = true }
         listMessages.adapter = PagedMessageListAdapter()

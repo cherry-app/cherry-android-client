@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cherry.chat">
 
+    <permission android:name="com.cherry.chat.permission.RECEIVE_MESSAGES" />
+
+    <uses-permission android:name="com.cherry.chat.permission.RECEIVE_MESSAGES" />
+
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -41,6 +45,13 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+
+        <receiver android:name=".receivers.IncomingMessageReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.cherry.chat.ACTION_NEW_INCOMING_MESSAGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
