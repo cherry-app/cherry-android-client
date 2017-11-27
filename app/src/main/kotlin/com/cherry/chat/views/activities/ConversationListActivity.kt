@@ -10,14 +10,17 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import com.cherry.chat.R
 import com.cherry.chat.managers.SharedPreferenceManager
 import com.cherry.chat.viewmodels.ConversationViewModel
 import com.cherry.chat.views.adapters.ConversationListAdapter
+import com.cherry.chat.views.base.SessionActivity
 import com.cherry.core.Cherry
 import com.cherry.core.models.Conversation
 import com.cherry.core.models.Participant
@@ -28,7 +31,7 @@ import kotlinx.android.synthetic.main.activity_conversation_list.*
  * Created by girish on 11/19/17.
  */
 
-class ConversationListActivity: AppCompatActivity() {
+class ConversationListActivity: SessionActivity() {
 
     companion object {
         const val REQUEST_CODE_CONTACTS_PERMISSION = 701
@@ -97,6 +100,21 @@ class ConversationListActivity: AppCompatActivity() {
                 emptyView.visibility = View.VISIBLE
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.activity_conversation_list, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.actionLogout -> {
+                logoutAndLaunchSignUp(true)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroy() {

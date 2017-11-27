@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import com.cherry.chat.R
 import com.cherry.chat.views.adapters.PagedMessageListAdapter
+import com.cherry.chat.views.base.SessionActivity
 import com.cherry.core.Cherry
 import com.cherry.core.models.Participant
 import kotlinx.android.synthetic.main.activity_conversation.*
@@ -13,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_conversation.*
  * Created by girish on 11/21/17.
  */
 
-class ConversationActivity : AppCompatActivity() {
+class ConversationActivity : SessionActivity() {
 
     companion object {
         const val KEY_PARTICIPANT_ID = "participantId"
