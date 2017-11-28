@@ -11,6 +11,17 @@ android {
     }
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
+    signingConfigs {
+        release {
+            def propsFile = rootProject.file('secret.properties')
+            def props = new Properties()
+            props.load(new FileInputStream(propsFile))
+            keyAlias props['CHERRY_KEY_ALIAS']
+            keyPassword props['CHERRY_KEY_PASS']
+            storeFile file('cherry.jks')
+            storePassword props['CHERRY_STORE_PASS']
+        }
+    }
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
         applicationId "com.cherry.chat"
