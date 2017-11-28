@@ -15,7 +15,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import com.cherry.chat.R
 import com.cherry.chat.managers.SharedPreferenceManager
 import com.cherry.chat.viewmodels.ConversationViewModel
